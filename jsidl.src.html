@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+
+<head>
+
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>JSIDL</title>
+<link rel="stylesheet" type="text/css" href="http://dev.w3.org/2006/webapi/WebIDL/WebIDL.css">
+<link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/W3C-ED">
+
+<body class="draft">
+
+<div class="head">
+	<h1>[TITLE]</h1>
+	
+	<h2 class="no-num no-toc">Working Draft — [DATE]</h2>
+	
+	<dl>
+		<dt>This version:
+		<dd><!--begin-link-->http://example.com/<!--end-link-->
+		
+		<dt>Editors:
+		<dd class="vcard">
+			<span class="fn">John Smith</span>,
+			<span class="org">Huge Multinationals Ltd.</span>,
+			<span class="email">john@example.com</span>
+		<dd class="vcard">
+			<span class="fn">Ian Smith</span>,
+			<span class="org">Huge Multinationals Ltd.</span>,
+			<span class="email">ian@example.com</span>
+	</dl>
+	
+	<p class="copyright">© Copyright 2009 Geoffrey Sneddon.
+	<p class="copyright">You are granted a license to do absolutely anything
+	with this document, including removing this copyright notice.
+</div>
+
+<h2 class="no-num no-toc">Abstract</h2>
+
+<p>This specification defines My Magic Specification to be even more awesome
+than any other specification ever written.
+
+<h2 class="no-num no-toc">Status</h2>
+
+<p>This is a <strong>work in progress</strong> and may change under your, your
+best friend's, your mother's, or your father's feet. This document changes
+once in a lifetime, so don't trust it says what it said when you last read it,
+because you don't know whose lifetime (or even other possibly useful
+information, such as their age or species) that refers to.
+
+<p>This specification is being produced by a dumb idiot, so don't bother
+sending feedback.
+
+<p>This specification is intended to replace absolutely nothing at all. It
+should therefore avoid you from getting bored, becuase you will never have
+nothing to do anymore, because this replaces it.
+
+<h2 class="no-num no-toc">Table of Contents</h2>
+
+<!--toc-->
+
+<h2>Coercions</h2>
+
+<p>This section describes how to coerce values when:
+
+<ul>
+  <li>they are passed as arguments into a function with a specified type
+  <li>they are passed as values to setters with a specified type
+</ul>
+
+<p>Each sub-section below describes how to coerce a value into the
+specified type</p>
+
+<h3>any</h3>
+
+<p>No coercion is performed.</p>
+
+<h3>boolean</h3>
+
+<p>A value <var>V</var> is coerced to a boolean value using the ECMAScript
+<a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.2" class="dfnref external">ToBoolean</a>
+abstract operation.</p>
+
+<h3>Integer</h3>
+
+<p>A value <var>V</var> is coerced to an <var>Integer</var> using the ECMAScript
+<a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.4" class="dfnref external">ToInteger</a>
+abstract operation.</p>
+
+<h3>PositiveInteger</h3>
+
+<p>A value <var>V</var> is coerced to a <var>PositiveInteger</var> using the ECMAScript
+<a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.11" class="dfnref external">ToPositiveInteger</a>
+abstract operation.</p>
+
+<h3>Number</h3>
+
+<p>A value <var>V</var> is coerced to a <var>PositiveInteger</var> using the ECMAScript
+<a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.3" class="dfnref external">ToNumber</a>
+abstract operation.</p>
+
+<h3>string</h3>
+
+<p>A value <var>V</var> is coerced to a <var>string</var> using the ECMAScript
+<a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.8" class="dfnref external">ToString</a>
+abstract operation.</p>
+
+<h3>object</h3>
+
+<p>A value <var>V</var> is coerced to an <var>object</var> using the ECMAScript
+<a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.9" class="dfnref external">ToObject</a>
+abstract operation.</p>
+
+<div class="note"><div class="noteHeader">Note</div>
+  <p>WebIDL requires that the value <var>V</var> return <span class="esvalue">Object</span>
+  for <a class="external" href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-8">Type(<var>V</var>)</a>.</p>
+  <p>However, this coercion is not uniformly implemented, and coercing primitives to
+  objects in this situation is more consistent with similar built-in ECMAScript operations.</p>
+</div>
+
+<h3>class or interface</h3>
+
+<p>Each platform-defined class or interface installs a non-forgable <span title="brand">Brand</span> on each
+object using its <a class="external" href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-15.3.4.6">@@create</a>
+method.</p>
+<p>Coercing a value <var>V</var> into a particular platform-defined class with the brand <var>B</var>
+is performed by running the following algorithm.</p>
+
+<ol>
+  <li>If <var>V</var> has the brand <var>B</var>, return <var>V</var>.</li>
+  <li>Throw a <var>TypeError</var>.</li>
+</ol>
+
+<h3>options</h3>
+
+<p>An options type is an <a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-11.13.1" class="dfnref external">ObjectBindingPattern</a>
+with type annotations.</p>
+<p>A value <var>V</var> is coerced into a particular options type as if by applying the
+ECMAScript destructuring assignment algorithm with the following modification:</p>
+
+<div class="note">
+  <p>Before Step 7 of the Keyed Destructuring Assignment Evaluation algorithm, coerce
+  <var>v</var> into the specified type using the coercion rules defined here.</p>
+</div>
+
+<h3>enum</h3>
+
+<p>An enum is a Set of String values.</p>
+
+<p>A value <var>V</var> is coerced into an enum <var>E</var> as follows.</p>
+
+<ol>
+  <li>Let <var>S</var> be the result of calling
+  <a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.8" class="dfnref external">ToString</a>(<var>V</var>).</li>
+  <li>If <var>S</var> is not in <var>E</var>, throw a <var>TypeError</var>.</li>
+  <li>return <var>S</var>.</li>
+</ol>
+
+<h2>Function Arguments</h2>
+
+<p>Function parameters are specified in JSIDL as a type-annotated <a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-13.1" class="dfnref external">FormalParameterList</a>.</p>
+<p>If a parameter is specified without a default, it is a <var>TypeError</var> to
+call the function without specifying that parameter.</p>
+
+<h3>Default Arguments</h3>
+
+<p>Default arguments are specified as in ECMAScript, by following the parameter's name with an <a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-11.1.5" class="dfnref external">Initialiser.</a></p>
+<p>As a shortcut, <code>=undefined</code> may be replaced with <code>?</code>.
+
+<div class="example"><div class="exampleHeader">Example</div>
+  <div class="block"><div class="blockTitleDiv"><span class="blockTitle">IDL</span></div><div class="blockContent"><pre class="code"><code class="idl-code">
+class ColorCreator {
+  object createColor(number v1, number v2, number v3, number alpha?);
+}
+  </code></pre></div></div>
+
+  <p>In this example, <code>createColor</code> must be called with three or four arguments. If the
+  fourth argument is omitted, its value will be undefined.</p>
+</div>
+
+<h2 class="no-num">Acknowledgements</h2>
+
