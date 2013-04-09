@@ -9,6 +9,11 @@
 <link rel="stylesheet" type="text/css" href="http://dev.w3.org/2006/webapi/WebIDL/WebIDL.css">
 <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/W3C-ED">
 
+<script src="http://dev.w3.org/2006/webapi/WebIDL/section-links.js" type="application/ecmascript"></script>
+<script src="http://dev.w3.org/2006/webapi/WebIDL/dfn.js" type="application/ecmascript"></script>
+
+</head>
+
 <body class="draft">
 
 <div class="head">
@@ -65,6 +70,9 @@ extremely early stage.</p>
 
 <!--toc-->
 
+<div id="sections">
+
+<div id="coercions" class="section">
 <h2>Coercions</h2>
 
 <p>This section describes how to coerce values when:
@@ -161,7 +169,9 @@ ECMAScript destructuring assignment algorithm with the following modification:</
   <li>If <var>S</var> is not in <var>E</var>, throw a <var>RangeError</var>.</li>
   <li>return <var>S</var>.</li>
 </ol>
+</div>
 
+<div id="function-args" class="section">
 <h2>Function Arguments</h2>
 
 <p>Function parameters are specified in JSIDL as a type-annotated <a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-13.1" class="dfnref external">FormalParameterList</a>.</p>
@@ -182,6 +192,12 @@ class ColorCreator {
 
   <p>In this example, <code>createColor</code> must be called with three or four arguments. If the
   fourth argument is omitted, its value will be undefined.</p>
+</div>
+</div>
+
+</div>
+
+<div id="appendices">
 </div>
 
 <h2 class="no-num">Acknowledgements</h2>

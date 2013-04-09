@@ -5,7 +5,12 @@
 <link href=http://dev.w3.org/2006/webapi/WebIDL/WebIDL.css rel=stylesheet type=text/css>
 <link href=http://www.w3.org/StyleSheets/TR/W3C-ED rel=stylesheet type=text/css>
 
-</head><body class=draft>
+<script src=http://dev.w3.org/2006/webapi/WebIDL/section-links.js type=application/ecmascript></script>
+<script src=http://dev.w3.org/2006/webapi/WebIDL/dfn.js type=application/ecmascript></script>
+
+</head>
+
+<body class=draft>
 
 <div class=head>
 	<h1>JSIDL</h1>
@@ -60,7 +65,7 @@ extremely early stage.</p>
 
 <!--begin-toc-->
 <ol class=toc>
- <li><a href=#coercions><span class=secno>1 </span>Coercions</a>
+ <li><a href=#coercions-0><span class=secno>1 </span>Coercions</a>
   <ol>
    <li><a href=#any><span class=secno>1.1 </span>any</a></li>
    <li><a href=#boolean><span class=secno>1.2 </span>boolean</a></li>
@@ -78,7 +83,10 @@ extremely early stage.</p>
  <li><a class=no-num href=#acknowledgements>Acknowledgements</a></li></ol>
 <!--end-toc-->
 
-<h2 id=coercions><span class=secno>1 </span>Coercions</h2>
+<div id=sections>
+
+<div class=section id=coercions>
+<h2 id=coercions-0><span class=secno>1 </span>Coercions</h2>
 
 <p>This section describes how to coerce values when:
 
@@ -174,7 +182,9 @@ ECMAScript destructuring assignment algorithm with the following modification:</
   <li>If <var>S</var> is not in <var>E</var>, throw a <var>RangeError</var>.</li>
   <li>return <var>S</var>.</li>
 </ol>
+</div>
 
+<div class=section id=function-args>
 <h2 id=function-arguments><span class=secno>2 </span>Function Arguments</h2>
 
 <p>Function parameters are specified in JSIDL as a type-annotated <a class="dfnref external" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-13.1>FormalParameterList</a>.</p>
@@ -195,6 +205,12 @@ class ColorCreator {
 
   <p>In this example, <code>createColor</code> must be called with three or four arguments. If the
   fourth argument is omitted, its value will be undefined.</p>
+</div>
+</div>
+
+</div>
+
+<div id=appendices>
 </div>
 
 <h2 class=no-num id=acknowledgements>Acknowledgements</h2>
