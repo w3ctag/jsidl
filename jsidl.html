@@ -15,7 +15,7 @@
 <div class=head>
 	<h1>JSIDL</h1>
 	
-	<h2 class="no-num no-toc" id=working-draft-9-april-2013>Working Draft — 9 April 2013</h2>
+	<h2 class="no-num no-toc" id=working-draft-10-april-2013>Working Draft — 10 April 2013</h2>
 	
 	<dl>
 		<dt>This version:
@@ -65,28 +65,147 @@ extremely early stage.</p>
 
 <!--begin-toc-->
 <ol class=toc>
- <li><a href=#coercions-0><span class=secno>1 </span>Coercions</a>
+ <li><a href=#types-0><span class=secno>1 </span>Types</a></li>
+ <li><a href=#type-tests><span class=secno>2 </span>Type Tests</a>
   <ol>
-   <li><a href=#any><span class=secno>1.1 </span>any</a></li>
-   <li><a href=#boolean><span class=secno>1.2 </span>boolean</a></li>
-   <li><a href=#integer><span class=secno>1.3 </span>Integer</a></li>
-   <li><a href=#positiveinteger><span class=secno>1.4 </span>PositiveInteger</a></li>
-   <li><a href=#number><span class=secno>1.5 </span>number</a></li>
-   <li><a href=#string><span class=secno>1.6 </span>string</a></li>
-   <li><a href=#object><span class=secno>1.7 </span>object</a></li>
-   <li><a href=#class-or-interface><span class=secno>1.8 </span>class or interface</a></li>
-   <li><a href=#options><span class=secno>1.9 </span>options</a></li>
-   <li><a href=#enum><span class=secno>1.10 </span>enum</a></li></ol></li>
- <li><a href=#function-arguments><span class=secno>2 </span>Function Arguments</a>
+   <li><a href=#object><span class=secno>2.1 </span>object</a></li>
+   <li><a href=#class-or-interface><span class=secno>2.2 </span>class or interface</a></li>
+   <li><a href=#options><span class=secno>2.3 </span>options</a></li>
+   <li><a href=#enum><span class=secno>2.4 </span>enum</a></li></ol></li>
+ <li><a href=#type-coercions><span class=secno>3 </span>Type Coercions</a>
   <ol>
-   <li><a href=#default-arguments><span class=secno>2.1 </span>Default Arguments</a></li></ol></li>
+   <li><a href=#any><span class=secno>3.1 </span>any</a></li>
+   <li><a href=#toboolean><span class=secno>3.2 </span>ToBoolean</a></li>
+   <li><a href=#tointeger><span class=secno>3.3 </span>ToInteger</a></li>
+   <li><a href=#topositiveinteger><span class=secno>3.4 </span>ToPositiveInteger</a></li>
+   <li><a href=#tonumber><span class=secno>3.5 </span>ToNumber</a></li>
+   <li><a href=#tostring><span class=secno>3.6 </span>ToString</a></li>
+   <li><a href=#toobject><span class=secno>3.7 </span>ToObject</a></li>
+   <li><a href=#class-or-interface-0><span class=secno>3.8 </span>class or interface</a></li>
+   <li><a href=#options-0><span class=secno>3.9 </span>options</a></li>
+   <li><a href=#enum-0><span class=secno>3.10 </span>enum</a></li></ol></li>
+ <li><a href=#function-arguments><span class=secno>4 </span>Function Arguments</a>
+  <ol>
+   <li><a href=#default-arguments><span class=secno>4.1 </span>Default Arguments</a></li></ol></li>
  <li><a class=no-num href=#acknowledgements>Acknowledgements</a></li></ol>
 <!--end-toc-->
 
 <div id=sections>
 
+<div class=section id=types>
+<h2 id=types-0><span class=secno>1 </span>Types</h2>
+
+<p>A <dfn id=type>type</dfn> in JSIDL represents two things.</p>
+
+<ul>
+  <li>A test to apply against an ECMAScript value to determine whether it is
+  already a member of the type.</li>
+  <li>A coercion rule to apply against any ECMAScript value that passes the
+  test.</li>
+</ul>
+
+<p>The rules apply to:</p>
+
+<ul>
+  <li>an argument into a function with the specified type <var>T</var></li>
+  <li>a values to setters with the specified type <var>T</var></li>
+</ul>
+
+<p>In either of the above situations, when the user supplies a value <var>V</var>,
+perform the following steps:</p>
+
+<ol>
+  <li>If performing <var>T</var>'s type test with <var>V</var> returns false,
+  throw a <code>TypeError</code>.</li>
+  <li>Let <var>C</var> be the result of performing <var>T</var>'s coercion with
+  <var>V</var>.</li>
+  <li>Continue as if the user supplied <var>C</var>.</li>
+</ol>
+
+</div>
+
+<div class=section id=tests>
+<h2 id=type-tests><span class=secno>2 </span>Type Tests</h2>
+
+<p>By default, a type's test passes for all ECMAScript values. This is because
+many types in JSIDL represent coercions that will always succeed. Exceptions are
+presented as subsections of this section.</p>
+
+<h3 id=object><span class=secno>2.1 </span>object</h3>
+
+<p>If a value <var>V</var> is an ECMAScript value other than <code>null</code>
+or <code>undefined</code>, return <code>true</code>.</p>
+
+<h3 id=class-or-interface><span class=secno>2.2 </span>class or interface</h3>
+
+<p>Each platform-defined class or interface installs a non-forgable Brand
+on each object using its
+<a class=external href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-15.3.4.6>@@create</a>
+method.</p>
+
+<p>A value <var>V</var> passes the test for a class or interface type with the
+brand <var>B</var> if the following algorithm returns <code>true</code>.</p>
+
+<ol>
+  <li>If <a class="external dfnref" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-8>Type</a>(<var>V</var>) is not
+  <var>Object</var>, return false.</li>
+  <li>If <var>V</var> has the brand <var>B</var>, return true.</li>
+  <li>Return false</li>
+</ol>
+
+<h3 id=options><span class=secno>2.3 </span>options</h3>
+
+<p>An options type is an <a class="dfnref external" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-11.13.1>ObjectBindingPattern</a>
+with type annotations.</p>
+
+<div class=note><div class=noteHeader>Note</div>
+  <p>This algorithm boils down to:</p>
+  <ol>
+    <li>Checking whether ECMAScript would throw if attempting to perform the
+    destructuring assignment represented by the options pattern.</li>
+    <li>Recursively running the type checks for the specified types.</li>
+  </ol>
+</div>
+
+<p>A value <var>V</var> passes the test for an options type if the following
+algorithm returns <code>true</code>.</p>
+
+<div class=note><div class=noteHeader>TODO</div>
+  <p>Find the cleanest way to reuse the logic in the ES6 spec here and below
+  in the coercion logic.</p>
+</div>
+
+<ol>
+  <li>Apply <a class="external dfnref" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-11.13.1>Destructuring Assignment Evaluation</a>
+  for the options type using <var>V</var> as the argument. If the algorithm throws an exception, return false.</li>
+  <li>For each property <var>P</var> with type <var>T</var> in the options type:
+    <ol>
+      <li>Let <var>X</var> be the result of applying <a class="external dfnref" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-8.3.9>[[Get]]</a>
+      with the arguments <var>P</var> and <var>V</var>.</li>
+      <li>If the result of applying <var>T</var>'s test on <var>X</var> is <code>false</code>, return <code>false</code>.</li>
+    </ol>
+  </li>
+  <li>Return <code>true</code>.</li>
+</ol>
+
+<h3 id=enum><span class=secno>2.4 </span>enum</h3>
+
+<p>An enum is a set of strings <var>E</var>.</p>
+<p>An ECMAScript value <var>V</var> passes the type test if the following
+algorithm returns true.</p>
+
+<ol>
+  <li>Let <var>S</var> be the result of calling
+  <a class="dfnref external" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.8>ToString</a>(<var>V</var>).</li>
+  <li>If <var>S</var> is not in <var>E</var>, return <code>false</code>.</li>
+  <li>return <code>true</code>.</li>
+</ol>
+
+
+</div>
+
 <div class=section id=coercions>
-<h2 id=coercions-0><span class=secno>1 </span>Coercions</h2>
+<h2 id=type-coercions><span class=secno>3 </span>Type Coercions</h2>
 
 <p>This section describes how to coerce values when:
 
@@ -98,43 +217,43 @@ extremely early stage.</p>
 <p>Each sub-section below describes how to coerce a value into the
 specified type</p>
 
-<h3 id=any><span class=secno>1.1 </span>any</h3>
+<h3 id=any><span class=secno>3.1 </span>any</h3>
 
 <p>No coercion is performed.</p>
 
-<h3 id=boolean><span class=secno>1.2 </span>boolean</h3>
+<h3 id=toboolean><span class=secno>3.2 </span>ToBoolean</h3>
 
-<p>A value <var>V</var> is coerced to a boolean value using the ECMAScript
+<p>A value <var>V</var> is coerced to a <var>ToBoolean</var> value using the ECMAScript
 <a class="dfnref external" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.2>ToBoolean</a>
 abstract operation.</p>
 
-<h3 id=integer><span class=secno>1.3 </span>Integer</h3>
+<h3 id=tointeger><span class=secno>3.3 </span>ToInteger</h3>
 
-<p>A value <var>V</var> is coerced to an <var>Integer</var> using the ECMAScript
+<p>A value <var>V</var> is coerced to a <var>ToInteger</var> value using the ECMAScript
 <a class="dfnref external" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.4>ToInteger</a>
 abstract operation.</p>
 
-<h3 id=positiveinteger><span class=secno>1.4 </span>PositiveInteger</h3>
+<h3 id=topositiveinteger><span class=secno>3.4 </span>ToPositiveInteger</h3>
 
-<p>A value <var>V</var> is coerced to a <var>PositiveInteger</var> using the ECMAScript
+<p>A value <var>V</var> is coerced to a <var>ToPositiveInteger</var> value using the ECMAScript
 <a class="dfnref external" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.11>ToPositiveInteger</a>
 abstract operation.</p>
 
-<h3 id=number><span class=secno>1.5 </span>number</h3>
+<h3 id=tonumber><span class=secno>3.5 </span>ToNumber</h3>
 
-<p>A value <var>V</var> is coerced to a <var>number</var> using the ECMAScript
+<p>A value <var>V</var> is coerced to a <var>ToNumber</var> value using the ECMAScript
 <a class="dfnref external" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.3>ToNumber</a>
 abstract operation.</p>
 
-<h3 id=string><span class=secno>1.6 </span>string</h3>
+<h3 id=tostring><span class=secno>3.6 </span>ToString</h3>
 
-<p>A value <var>V</var> is coerced to a <var>string</var> using the ECMAScript
+<p>A value <var>V</var> is coerced to a <var>ToString</var> value using the ECMAScript
 <a class="dfnref external" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.8>ToString</a>
 abstract operation.</p>
 
-<h3 id=object><span class=secno>1.7 </span>object</h3>
+<h3 id=toobject><span class=secno>3.7 </span>ToObject</h3>
 
-<p>A value <var>V</var> is coerced to an <var>object</var> using the ECMAScript
+<p>A value <var>V</var> is coerced to a <var>ToObject</var> value using the ECMAScript
 <a class="dfnref external" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.9>ToObject</a>
 abstract operation.</p>
 
@@ -145,23 +264,18 @@ abstract operation.</p>
   objects in this situation is more consistent with similar built-in ECMAScript operations.</p>
 </div>
 
-<h3 id=class-or-interface><span class=secno>1.8 </span>class or interface</h3>
+<h3 id=class-or-interface-0><span class=secno>3.8 </span>class or interface</h3>
 
-<p>Each platform-defined class or interface installs a non-forgable <span title=brand>Brand</span> on each
-object using its <a class=external href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-15.3.4.6>@@create</a>
-method.</p>
-<p>Coercing a value <var>V</var> into a particular platform-defined class with the brand <var>B</var>
-is performed by running the following algorithm.</p>
+<p>No coercion is performed.</p>
 
-<ol>
-  <li>If <var>V</var> has the brand <var>B</var>, return <var>V</var>.</li>
-  <li>Throw a <var>TypeError</var>.</li>
-</ol>
+<div class=note><div class=noteHeader>Note</div>
+  <p>Any value that gets through the type test for a particular class or interface is
+  already an instance of that class or interface.</p>
+</div>
 
-<h3 id=options><span class=secno>1.9 </span>options</h3>
 
-<p>An options type is an <a class="dfnref external" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-11.13.1>ObjectBindingPattern</a>
-with type annotations.</p>
+<h3 id=options-0><span class=secno>3.9 </span>options</h3>
+
 <p>A value <var>V</var> is coerced into a particular options type as if by applying the
 ECMAScript destructuring assignment algorithm with the following modification:</p>
 
@@ -170,7 +284,7 @@ ECMAScript destructuring assignment algorithm with the following modification:</
   <var>v</var> into the specified type using the coercion rules defined here.</p>
 </div>
 
-<h3 id=enum><span class=secno>1.10 </span>enum</h3>
+<h3 id=enum-0><span class=secno>3.10 </span>enum</h3>
 
 <p>An enum is a Set of String values.</p>
 
@@ -185,13 +299,13 @@ ECMAScript destructuring assignment algorithm with the following modification:</
 </div>
 
 <div class=section id=function-args>
-<h2 id=function-arguments><span class=secno>2 </span>Function Arguments</h2>
+<h2 id=function-arguments><span class=secno>4 </span>Function Arguments</h2>
 
 <p>Function parameters are specified in JSIDL as a type-annotated <a class="dfnref external" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-13.1>FormalParameterList</a>.</p>
 <p>If a parameter is specified without a default, it is a <var>TypeError</var> to
 call the function without specifying that parameter.</p>
 
-<h3 id=default-arguments><span class=secno>2.1 </span>Default Arguments</h3>
+<h3 id=default-arguments><span class=secno>4.1 </span>Default Arguments</h3>
 
 <p>Default arguments are specified as in ECMAScript, by following the parameter's name with an <a class="dfnref external" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-11.1.5>Initialiser.</a></p>
 <p>As a shortcut, <code>=undefined</code> may be replaced with <code>?</code>.
@@ -204,7 +318,7 @@ class ColorCreator {
   </code></pre></div></div>
 
   <p>In this example, <code>createColor</code> must be called with three or four arguments. If the
-  fourth argument is omitted, its value will be <code>undefined</code>, and thus coerced to <code>0</code>.</p>
+  fourth argument is omitted, its value will be undefined.</p>
 </div>
 </div>
 
