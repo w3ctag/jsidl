@@ -72,116 +72,21 @@ extremely early stage.</p>
 
 <div id="sections">
 
-<div id="types" class="section">
-<h2>Types</h2>
-
-<p>A <dfn>type</dfn> in JSIDL represents two things.</p>
-
-<ul>
-  <li>A test to apply against an ECMAScript value to determine whether it is
-  already a member of the type.</li>
-  <li>A coercion rule to apply against any ECMAScript value that passes the
-  test.</li>
-</ul>
-
-<p>The rules apply to:</p>
-
-<ul>
-  <li>an argument into a function with the specified type <var>T</var></li>
-  <li>a values to setters with the specified type <var>T</var></li>
-</ul>
-
-<p>In either of the above situations, when the user supplies a value <var>V</var>,
-perform the following steps:</p>
-
-<ol>
-  <li>If performing <var>T</var>'s type test with <var>V</var> returns false,
-  throw a <code>TypeError</code>.</li>
-  <li>Let <var>C</var> be the result of performing <var>T</var>'s coercion with
-  <var>V</var>.</li>
-  <li>Continue as if the user supplied <var>C</var>.</li>
-</ol>
-
-</div>
-
-<div id="tests" class="section">
-<h2>Type Tests</h2>
-
-<p>By default, a type's test passes for all ECMAScript values. This is because
-many types in JSIDL represent coercions that will always succeed. Exceptions are
-presented as subsections of this section.</p>
-
-<h3>object</h3>
-
-<p>If a value <var>V</var> is <code>null</code> or <code>undefined</code>,
-return <code>false</code>. Otherwise, return <code>true</code>.</p>
-
-<h3>class or interface</h3>
-
-<p>Each platform-defined class or interface installs a non-forgable Brand
-on each object using its
-<a class="external" href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-15.3.4.6">@@create</a>
-method.</p>
-
-<p>A value <var>V</var> passes the test for a class or interface type with the
-brand <var>B</var> if the following algorithm returns <code>true</code>.</p>
-
-<ol>
-  <li>If <var>V</var> has the brand <var>B</var>, return true.</li>
-  <li>Return false.</li>
-</ol>
-
-<h3>options</h3>
-
-<p>An options type is an <a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-11.13.1" class="dfnref external">ObjectBindingPattern</a>
-with type annotations.</p>
+<div id="coercions" class="section">
+<h2>Coercions</h2>
 
 <div class="note"><div class="noteHeader">Note</div>
-  <p>This algorithm boils down to:</p>
-  <ol>
-    <li>Checking whether ECMAScript would throw if attempting to perform the
-    destructuring assignment represented by the options pattern.</li>
-    <li>Recursively running the type checks for the specified types.</li>
-  </ol>
+  <p>JSIDL does not define any "types". Instead, it defines a series of
+  coercion rules that can be applied to an input value and produce an
+  output value.</p>
+  <p>In some cases, those coercion rules may produce an error, either
+  by virtue of delegation to ECMAScript algorithms, or as defined in
+  the algorithms themselves.</p>
 </div>
-
-<p>A value <var>V</var> passes the test for an options type if the following
-algorithm returns <code>true</code>.</p>
-
-<div class="note"><div class="noteHeader">TODO</div>
-  <p>Find the cleanest way to reuse the logic in the ES6 spec here and below
-  in the coercion logic.</p>
-</div>
-
-<ol>
-  <li>Apply <a class="external dfnref" href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-11.13.1">Destructuring Assignment Evaluation</a>
-  for the options type using <var>V</var> as the argument. If the algorithm throws an exception, return false.</li>
-  <li>For each property <var>P</var> with type <var>T</var> in the options type:
-    <ol>
-      <li>Let <var>X</var> be the result of applying <a class="external dfnref" href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-8.3.9">[[Get]]</a>
-      with the arguments <var>P</var> and <var>V</var>.</li>
-      <li>If the result of applying <var>T</var>'s test on <var>X</var> is <code>false</code>, return <code>false</code>.</li>
-    </ol>
-  </li>
-  <li>Return <code>true</code>.</li>
-</ol>
-
-<h3>enum</h3>
-
-<p>An enum is a set of strings <var>E</var>.</p>
-<p>An ECMAScript value <var>V</var> passes the type test if the following
-algorithm returns true.</p>
-
-<ol>
-  <li>Let <var>S</var> be the result of calling
-  <a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-9.1.8" class="dfnref external">ToString</a>(<var>V</var>).</li>
-  <li>If <var>S</var> is not in <var>E</var>, return <code>false</code>.</li>
-  <li>return <code>true</code>.</li>
-</ol>
 
 </div>
 
-<div id="coercions" class="section">
+<div id="coercions-definitions" class="section">
 <h2>Type Coercions</h2>
 
 <p>This section describes how to coerce values when:
@@ -192,7 +97,7 @@ algorithm returns true.</p>
 </ul>
 
 <p>Each sub-section below describes how to coerce a value into the
-specified type</p>
+specified type.</p>
 
 <h3>any</h3>
 
@@ -243,27 +148,41 @@ abstract operation.</p>
 
 <h3>class or interface</h3>
 
-<p>No coercion is performed.</p>
+<p>Each platform-defined class or interface installs a non-forgable Brand
+on each object using its
+<a class="external" href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-15.3.4.6">@@create</a>
+method.</p>
 
-<div class="note"><div class="noteHeader">Note</div>
-  <p>Any value that gets through the type test for a particular class or interface is
-  already an instance of that class or interface.</p>
-</div>
+<p>A value <var>V</var> is coerced to a class or interface value by performing the following
+algorithm.</p>
 
+<ol>
+  <li>If <var>V</var> has the brand <var>B</var>, return <var>V</var>.</li>
+  <li>Throw a <code>TypeError</code>.</li>
+</ol>
 
 <h3>options</h3>
 
-<p>A value <var>V</var> is coerced into a particular options type as if by applying the
-ECMAScript destructuring assignment algorithm with the following modification:</p>
+<p>An options type is an <a href="http://people.mozilla.org/~jorendorff/es6-draft.html#sec-11.13.1" class="dfnref external">ObjectBindingPattern</a>
+with type annotations.</p>
 
-<div class="note">
-  <p>Before Step 7 of the Keyed Destructuring Assignment Evaluation algorithm, coerce
-  <var>v</var> into the specified type using the coercion rules defined here.</p>
+<div class="note"><div class="noteHeader">Note</div>
+  <p>This algorithm boils down to:</p>
+  <ol>
+    <li>Checking whether ECMAScript would throw if attempting to perform the
+    destructuring assignment represented by the options pattern.</li>
+    <li>Recursively running the coercions for the specified types.</li>
+    <li>Returning the coerced value</li>
+  </ol>
+</div>
+
+<div class="note"><div class="noteHeader">TODO</div>
+  <p>Work through the most elegant way to define these coercion in terms of ECMAScript</p>
 </div>
 
 <h3>enum</h3>
 
-<p>An enum is a Set of String values.</p>
+<p>An enum is a set of strings <var>E</var>.</p>
 
 <p>A value <var>V</var> is coerced into an enum <var>E</var> as follows.</p>
 
@@ -306,3 +225,6 @@ class ColorCreator {
 
 <h2 class="no-num">Acknowledgements</h2>
 
+<p>Thanks to Dave Herman and Sam Tobin-Hochstadt for helping me work through some semantic differences with WebIDL. Thanks to Anne
+van Kesteren and Boris Zbarsky for helping me with the precise semantics of existing specs. Thanks to Alex Russell for the inspiration
+to begin this project.</p>
