@@ -106,12 +106,12 @@ extremely early stage.</p>
 <p>This section describes how to coerce values when:
 
 </p><ul>
-  <li>they are passed as arguments into a function with a specified type
-  </li><li>they are passed as values to setters with a specified type
+  <li>they are passed as arguments into a function with a specified coercion
+  </li><li>they are passed as values to setters with a specified coercion
 </li></ul>
 
-<p>Each sub-section below describes how to coerce a value into the
-specified type.</p>
+<p>Each sub-section below describes how to coerce a value using the
+specified coercion rule.</p>
 
 <h3 id=any><span class=secno>2.1 </span>any</h3>
 
@@ -211,7 +211,7 @@ with type annotations.</p>
 <div class=section id=function-args>
 <h2 id=function-arguments><span class=secno>3 </span>Function Arguments</h2>
 
-<p>Function parameters are specified in JSIDL as a type-annotated <a class="dfnref external" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-13.1>FormalParameterList</a>.</p>
+<p>Function parameters are specified in JSIDL as a coercion-annotated <a class="dfnref external" href=http://people.mozilla.org/~jorendorff/es6-draft.html#sec-13.1>FormalParameterList</a>.</p>
 <p>If a parameter is specified without a default, it is a <var>TypeError</var> to
 call the function without specifying that parameter.</p>
 
